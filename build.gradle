@@ -1,0 +1,45 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.5
+
+group = 'edu.cmu.sei.ams.cloudlet'
+version = '1.0'
+
+configurations {
+    provided
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url 'http://aurora/artifactory/release'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+        'edu.cmu.sei.ams.cloudlet:client-lib:+'
+    )
+    provided 'com.google.android:android:4.1.1.4'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+sourceSets.main.compileClasspath += configurations.provided
+sourceSets.test.compileClasspath += configurations.provided
+sourceSets.test.runtimeClasspath += configurations.provided
