@@ -9,6 +9,6 @@ public class Test
 {
     public static void main(String ... args)
     {
-        Class c = CloudletFinder.class;
+        System.out.println("Testing");
     }
 }
