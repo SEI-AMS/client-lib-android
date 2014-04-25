@@ -23,7 +23,7 @@ public class FindCloudletsAsyncTask extends CloudletAsyncTask<List<Cloudlet>>
 
     public FindCloudletsAsyncTask(Context context, CloudletCallback<List<Cloudlet>> callback)
     {
-        super(callback, context, TITLE, MESSAGE);
+        super(context, callback, TITLE, MESSAGE);
     }
 
     @Override

@@ -26,7 +26,7 @@ public abstract class CloudletAsyncTask<T> extends AsyncTask<Void, Void, T>
         this.mCallback = callback;
     }
 
-    public CloudletAsyncTask(CloudletCallback<T> callback, Context context, String title, String message)
+    public CloudletAsyncTask(Context context, CloudletCallback<T> callback, String title, String message)
     {
         this.mCallback = callback;
         this.mContext = context;
