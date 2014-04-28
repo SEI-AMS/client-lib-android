@@ -12,7 +12,7 @@ import edu.cmu.sei.ams.cloudlet.ServiceVM;
 public class StartServiceAsyncTask extends CloudletAsyncTask<ServiceVM>
 {
     private static final String TITLE = "Cloudlet";
-    private static final String MESSAGE = "Searching for Cloudlets...";
+    private static final String MESSAGE = "Starting service";
 
     private Service mService;
 
