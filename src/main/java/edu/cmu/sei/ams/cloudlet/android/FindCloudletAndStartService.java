@@ -35,11 +35,14 @@ public class FindCloudletAndStartService
             public void handle(Cloudlet result)
             {
                 if (result == null)
+                {
                     mCallback.handle(null);
+                    return;
+                }
                 try
                 {
                     Service service = result.getServiceById(mServiceId); //This *should* never fail
-                    new StartServiceAsyncTask(service, mContext, mCallback);
+                    new StartServiceAsyncTask(service, mContext, mCallback).execute();
                 }
                 catch (Exception e)
                 {
