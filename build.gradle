@@ -35,7 +35,3 @@ artifacts {
     archives sourcesJar
     archives javadocJar
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
-}
