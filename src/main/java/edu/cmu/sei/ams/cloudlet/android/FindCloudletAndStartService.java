@@ -31,7 +31,6 @@ public class FindCloudletAndStartService
     {
         new FindCloudletByRankAsyncTask(mContext, mServiceId, mRanker, new CloudletCallback<Cloudlet>()
         {
-            @Override
             public void handle(Cloudlet result)
             {
                 if (result == null)
