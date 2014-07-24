@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     compile (
-        'edu.cmu.sei.ams.cloudlet:client-lib:1.4',
+        'edu.cmu.sei.ams.cloudlet:client-lib:1.5',
         'com.google.android:android:4.1.1.4'
     )
 }
