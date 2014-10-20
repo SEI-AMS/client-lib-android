@@ -1,6 +1,7 @@
 package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
+import android.util.Log;
 import edu.cmu.sei.ams.cloudlet.App;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class DownloadAppAsyncTask extends CloudletAsyncTask<File>
         }
         catch (Exception e)
         {
+            Log.e("CLOUDLET-LIB", "Error downloading file", e);
             return null;
         }
     }
