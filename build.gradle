@@ -4,7 +4,7 @@ apply plugin: 'maven'
 sourceCompatibility = 1.5
 
 group = 'edu.cmu.sei.ams.cloudlet'
-version = '1.6'
+version = '1.6.1'
 
 repositories {
     mavenLocal()
@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     compile (
-        'edu.cmu.sei.ams.cloudlet:client-lib:1.13',
+        'edu.cmu.sei.ams.cloudlet:client-lib:1.13.2',
         'com.google.android:android:4.1.1.4'
     )
 }
