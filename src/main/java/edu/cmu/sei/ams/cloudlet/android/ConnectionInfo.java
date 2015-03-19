@@ -89,7 +89,7 @@ public class ConnectionInfo
      * @param intent
      * @return
      */
-    private boolean storeConnInfoFromIntent(Intent intent)
+    public boolean storeConnInfoFromIntent(Intent intent)
     {
         Log.v(this.mLogTag, "storeInfoFromIntent");
         if(intent == null)
