@@ -31,6 +31,17 @@ public class FindCloudletAndStartService
         this.mCallback = callback;
     }
 
+    /**
+     * Constructor that uses default CpuBasedRanker.
+     */
+    public FindCloudletAndStartService(Context context, String serviceId, CloudletCallback<ServiceVM> callback)
+    {
+        this.mContext = context;
+        this.mServiceId = serviceId;
+        this.mRanker = new CpuBasedRanker();
+        this.mCallback = callback;
+    }
+
     public void execute()
     {
         new FindCloudletByRankAsyncTask(mContext, mServiceId, mRanker, new CloudletCallback<Cloudlet>()

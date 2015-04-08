@@ -4,7 +4,7 @@ apply plugin: 'maven'
 sourceCompatibility = 1.5
 
 group = 'edu.cmu.sei.ams.cloudlet'
-version = '1.7.0'
+version = '1.7.1'
 
 repositories {
     mavenLocal()
