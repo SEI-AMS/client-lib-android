@@ -27,7 +27,7 @@ public class ServiceConnectionInfo
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         this.setIpAddress(prefs.getString(ipPrefString, "127.0.0.1"));
-        this.setPortNumber(prefs.getInt(portPrefString, 0));
+        this.setPortNumber(Integer.valueOf(prefs.getString(portPrefString, "0")));
     }
 
     /**
