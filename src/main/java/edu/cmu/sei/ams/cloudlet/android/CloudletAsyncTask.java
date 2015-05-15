@@ -66,6 +66,12 @@ public abstract class CloudletAsyncTask<T> extends AsyncTask<Void, Void, T>
     @Override
     protected void onPreExecute()
     {
+        if (mProgressDialog != null)
+        {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+
         if (mContext != null)
         {
             mProgressDialog = new ProgressDialog(mContext);
