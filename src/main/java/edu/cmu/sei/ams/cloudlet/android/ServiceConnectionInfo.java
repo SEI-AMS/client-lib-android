@@ -73,8 +73,8 @@ public class ServiceConnectionInfo
 
     /**
      * Loads IP and port from the given Intent, if any.
-     * @param intent
-     * @return
+     * @param intent the intent to get the IP and port from.
+     * @return true if the IP and port were loaded from the Intent, false otherwise.
      */
     public boolean loadFromIntent(Intent intent)
     {
