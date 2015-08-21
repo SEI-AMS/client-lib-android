@@ -45,19 +45,19 @@ public class FindCloudletsAsyncTask extends CloudletAsyncTask<List<Cloudlet>>
     private static final String TITLE = "Cloudlet";
     private static final String MESSAGE = "Searching for Cloudlets...";
 
-    public FindCloudletsAsyncTask(CloudletCallback<List<Cloudlet>> callback)
-    {
-        super(callback);
-    }
+    private Context context = null;
 
     public FindCloudletsAsyncTask(Context context, CloudletCallback<List<Cloudlet>> callback)
     {
         super(context, callback, TITLE, MESSAGE);
+        this.context = context;
     }
 
     @Override
     protected List<Cloudlet> doInBackground(Void... params)
     {
-        return CloudletFinder.findCloudlets();
+        CloudletFinder finder = new CloudletFinder();
+        finder.enableEncryption(CredentialsManager.getDeviceId(this.context), CredentialsManager.loadDataFromFile("password"));
+        return finder.findCloudlets();
     }
 }

@@ -33,6 +33,7 @@ import android.content.Context;
 import edu.cmu.sei.ams.cloudlet.App;
 import edu.cmu.sei.ams.cloudlet.AppFilter;
 import edu.cmu.sei.ams.cloudlet.AppFinder;
+import edu.cmu.sei.ams.cloudlet.CloudletFinder;
 
 import java.util.List;
 
@@ -46,33 +47,28 @@ public class AppFinderAsyncTask extends CloudletAsyncTask<List<App>>
     private static final String TITLE = "App Finder";
     private static final String MESSAGE = "Searching for apps...";
 
+    private Context context = null;
     private AppFilter filter;
-
-    public AppFinderAsyncTask(CloudletCallback<List<App>> callback)
-    {
-        super(callback);
-    }
-
-    public AppFinderAsyncTask(AppFilter filter, CloudletCallback<List<App>> callback)
-    {
-        super(callback);
-        this.filter = filter;
-    }
 
     public AppFinderAsyncTask(Context context, CloudletCallback<List<App>> callback)
     {
         super(context, callback, TITLE, MESSAGE);
+        this.context = context;
     }
 
     public AppFinderAsyncTask(Context context, AppFilter filter, CloudletCallback<List<App>> callback)
     {
         super(context, callback, TITLE, MESSAGE);
         this.filter = filter;
+        this.context = context;
     }
 
     @Override
     protected List<App> doInBackground(Void... params)
     {
-        return AppFinder.findApps(filter);
+        CloudletFinder finder = new CloudletFinder();
+        finder.enableEncryption(CredentialsManager.getDeviceId(this.context), CredentialsManager.loadDataFromFile("password"));
+        AppFinder appFinder = new AppFinder(finder);
+        return appFinder.findApps(filter);
     }
 }

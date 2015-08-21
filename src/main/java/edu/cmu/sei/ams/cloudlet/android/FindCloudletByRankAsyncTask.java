@@ -44,27 +44,23 @@ public class FindCloudletByRankAsyncTask extends CloudletAsyncTask<Cloudlet>
     private static final String TITLE = "Cloudlet";
     private static final String MESSAGE = "Searching for Cloudlets...";
 
+    private Context context = null;
     private String mServiceId;
     private CloudletRanker mRanker;
-
-    public FindCloudletByRankAsyncTask(String serviceId, CloudletRanker ranker, CloudletCallback<Cloudlet> callback)
-    {
-        super(callback);
-        this.mServiceId = serviceId;
-        this.mRanker = ranker;
-    }
 
     public FindCloudletByRankAsyncTask(Context context, String serviceId, CloudletRanker ranker, CloudletCallback<Cloudlet> callback)
     {
         super(context, callback, TITLE, MESSAGE);
         this.mServiceId = serviceId;
         this.mRanker = ranker;
-
+        this.context = context;
     }
 
     @Override
     protected Cloudlet doInBackground(Void... params)
     {
-        return CloudletFinder.findCloudletForService(mServiceId, mRanker);
+        CloudletFinder finder = new CloudletFinder();
+        finder.enableEncryption(CredentialsManager.getDeviceId(this.context), CredentialsManager.loadDataFromFile("password"));
+        return finder.findCloudletForService(mServiceId, mRanker);
     }
 }
