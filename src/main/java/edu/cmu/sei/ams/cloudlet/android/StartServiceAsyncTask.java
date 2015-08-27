@@ -30,6 +30,8 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
+import android.util.Log;
+
 import edu.cmu.sei.ams.cloudlet.Service;
 import edu.cmu.sei.ams.cloudlet.ServiceVM;
 
@@ -60,6 +62,15 @@ public class StartServiceAsyncTask extends CloudletAsyncTask<ServiceVM>
     @Override
     protected ServiceVM doInBackground(Void... params)
     {
-        return mService.startService();
+        try
+        {
+            return mService.startService();
+        }
+        catch(Exception e)
+        {
+            Log.e("StartServiceAsyncTask", "Error getting starting service: ", e);
+            this.mException = e;
+            return null;
+        }
     }
 }

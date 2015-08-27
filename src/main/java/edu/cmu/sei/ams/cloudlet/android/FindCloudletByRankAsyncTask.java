@@ -30,6 +30,10 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
+import android.util.Log;
+
+import java.util.ArrayList;
+
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.CloudletFinder;
 import edu.cmu.sei.ams.cloudlet.rank.CloudletRanker;
@@ -44,7 +48,6 @@ public class FindCloudletByRankAsyncTask extends CloudletAsyncTask<Cloudlet>
     private static final String TITLE = "Cloudlet";
     private static final String MESSAGE = "Searching for Cloudlets...";
 
-    private Context context = null;
     private String mServiceId;
     private CloudletRanker mRanker;
 
@@ -53,14 +56,22 @@ public class FindCloudletByRankAsyncTask extends CloudletAsyncTask<Cloudlet>
         super(context, callback, TITLE, MESSAGE);
         this.mServiceId = serviceId;
         this.mRanker = ranker;
-        this.context = context;
     }
 
     @Override
     protected Cloudlet doInBackground(Void... params)
     {
-        CloudletFinder finder = new CloudletFinder();
-        finder.enableEncryption(CredentialsManager.getDeviceId(this.context), CredentialsManager.loadDataFromFile("password"));
-        return finder.findCloudletForService(mServiceId, mRanker);
+        try
+        {
+            CloudletFinder finder = new CloudletFinder();
+            finder.enableEncryption(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.loadDataFromFile("password"));
+            return finder.findCloudletForService(mServiceId, mRanker);
+        }
+        catch(Exception e)
+        {
+            Log.e("FindCloudletByRankAsyncTask", "Error finding cloudlet: ", e);
+            this.mException = e;
+            return null;
+        }
     }
 }

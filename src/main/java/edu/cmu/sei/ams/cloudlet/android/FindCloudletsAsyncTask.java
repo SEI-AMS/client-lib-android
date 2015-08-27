@@ -30,9 +30,12 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
+import android.util.Log;
+
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.CloudletFinder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,19 +48,25 @@ public class FindCloudletsAsyncTask extends CloudletAsyncTask<List<Cloudlet>>
     private static final String TITLE = "Cloudlet";
     private static final String MESSAGE = "Searching for Cloudlets...";
 
-    private Context context = null;
-
     public FindCloudletsAsyncTask(Context context, CloudletCallback<List<Cloudlet>> callback)
     {
         super(context, callback, TITLE, MESSAGE);
-        this.context = context;
     }
 
     @Override
     protected List<Cloudlet> doInBackground(Void... params)
     {
-        CloudletFinder finder = new CloudletFinder();
-        finder.enableEncryption(CredentialsManager.getDeviceId(this.context), CredentialsManager.loadDataFromFile("password"));
-        return finder.findCloudlets();
+        try
+        {
+            CloudletFinder finder = new CloudletFinder();
+            finder.enableEncryption(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.loadDataFromFile("password"));
+            return finder.findCloudlets();
+        }
+        catch(Exception e)
+        {
+            Log.e("FindCloudletsAsyncTask", "Error finding cloudlets: ", e);
+            this.mException = e;
+            return new ArrayList<Cloudlet>();
+        }
     }
 }

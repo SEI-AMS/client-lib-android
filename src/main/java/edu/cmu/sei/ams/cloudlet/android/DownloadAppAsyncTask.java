@@ -31,9 +31,13 @@ package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import edu.cmu.sei.ams.cloudlet.App;
+import edu.cmu.sei.ams.cloudlet.CloudletException;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * User: jdroot
@@ -47,13 +51,6 @@ public class DownloadAppAsyncTask extends CloudletAsyncTask<File>
 
     private final App mApp;
     private final File mOutDir;
-
-    public DownloadAppAsyncTask(App app, File outDir, CloudletCallback<File> callback)
-    {
-        super(callback);
-        this.mApp = app;
-        this.mOutDir = outDir;
-    }
 
     public DownloadAppAsyncTask(Context context, App app, File outDir, CloudletCallback<File> callback)
     {
@@ -71,7 +68,8 @@ public class DownloadAppAsyncTask extends CloudletAsyncTask<File>
         }
         catch (Exception e)
         {
-            Log.e("CLOUDLET-LIB", "Error downloading file", e);
+            Log.e("DownloadAppAsyncTask", "Error downloading file", e);
+            this.mException = e;
             return null;
         }
     }

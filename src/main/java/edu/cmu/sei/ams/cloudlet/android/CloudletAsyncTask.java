@@ -34,6 +34,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.widget.Toast;
 
 /**
  * User: jdroot
@@ -44,9 +45,11 @@ import android.os.Build;
 public abstract class CloudletAsyncTask<T> extends AsyncTask<Void, Void, T>
 {
     private CloudletCallback<T> mCallback;
-    private Context mContext;
+    protected Context mContext;
     private String mTitle;
     private String mMessage;
+
+    protected Exception mException = null;
 
     private ProgressDialog mProgressDialog = null;
 
@@ -90,6 +93,10 @@ public abstract class CloudletAsyncTask<T> extends AsyncTask<Void, Void, T>
         {
             mProgressDialog.dismiss();
             mProgressDialog = null;
+        }
+
+        if(this.mException != null) {
+            Toast.makeText(this.mContext, "Error processing task: " + this.mException.toString(), Toast.LENGTH_LONG).show();
         }
 
         mCallback.handle(t);

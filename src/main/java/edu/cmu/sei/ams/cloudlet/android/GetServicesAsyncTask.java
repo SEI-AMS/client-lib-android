@@ -30,6 +30,8 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
+import android.util.Log;
+
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.Service;
 
@@ -68,6 +70,8 @@ public class GetServicesAsyncTask extends CloudletAsyncTask<List<Service>>
         }
         catch (Exception e)
         {
+            Log.e("GetServicesAsyncTask", "Error getting services list: ", e);
+            this.mException = e;
             return null;
         }
     }
