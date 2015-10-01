@@ -96,7 +96,7 @@ public abstract class CloudletAsyncTask<T> extends AsyncTask<Void, Void, T>
         }
 
         if(this.mException != null) {
-            Toast.makeText(this.mContext, "Error processing task: " + this.mException.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this.mContext, this.mException.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         if(mCallback != null) {
