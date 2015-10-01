@@ -59,7 +59,9 @@ public class FindCloudletsAsyncTask extends CloudletAsyncTask<List<Cloudlet>>
         try
         {
             CloudletFinder finder = new CloudletFinder();
-            finder.enableEncryption(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.loadDataFromFile("password"));
+            boolean encryptionEnabled = CloudletPreferences.isEncryptionEnabled(this.mContext);
+            if(encryptionEnabled)
+                finder.enableEncryption(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.loadDataFromFile("password"));
             return finder.findCloudlets();
         }
         catch(Exception e)
