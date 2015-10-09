@@ -67,7 +67,7 @@ public class ServiceConnectionInfo
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.putString(ipPrefString, this.getIpAddress());
-        prefsEditor.putInt(portPrefString, this.getPortNumber());
+        prefsEditor.putString(portPrefString, Integer.toString(this.getPortNumber()));
         prefsEditor.commit();
     }
 
