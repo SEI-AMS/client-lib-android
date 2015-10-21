@@ -20,7 +20,7 @@ public class CloudletPreferences
     public static boolean isEncryptionEnabled(Context context)
     {
         SharedPreferences settings = context.getSharedPreferences(PREFS_FILE_NAME, 0);
-        boolean encryptionEnabled = settings.getBoolean(PREF_ENCRYPTION_STATE, true);
+        boolean encryptionEnabled = settings.getBoolean(PREF_ENCRYPTION_STATE, false);
         return encryptionEnabled;
     }
 
