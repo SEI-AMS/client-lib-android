@@ -72,7 +72,7 @@ public class AppFinderAsyncTask extends CloudletAsyncTask<List<App>>
         try
         {
             CloudletFinder finder = new CloudletFinder();
-            finder.setEncryptionCredentials(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.loadDataFromFile("password"));
+            finder.setEncryptionCredentials(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.getEncryptionPassword());
             AppFinder appFinder = new AppFinder(finder);
             return appFinder.findApps(filter);
         }

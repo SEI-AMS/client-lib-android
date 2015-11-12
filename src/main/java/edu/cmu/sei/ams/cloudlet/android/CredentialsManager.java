@@ -42,10 +42,23 @@ import edu.cmu.sei.ams.cloudlet.android.utils.FileHandler;
 public class CredentialsManager {
     private static final String TAG = "CredentialsManager";
 
-    public static final String CREDENTIALS_FOLDER_PATH = "/sdcard/cloudlet/credentials/";
+    private static final String CREDENTIALS_FOLDER_PATH = "/sdcard/cloudlet/credentials/";
+
+    private static final String ENCRYPTION_PASSWORD_FILE_NAME = "encryption_password.txt";
+
+    /**
+     * Creates the full path given a file name/id.
+     * @param fileName The name of the file.
+     * @return the full path.
+     */
+    public static String getFullPath(String fileName)
+    {
+        return CREDENTIALS_FOLDER_PATH + fileName;
+    }
 
     /**
      * Returns the ID for the device.
+     * @param context the current Android context.
      * @return a String representing a unique id for the device.
      */
     public static String getDeviceId(Context context) {
@@ -54,18 +67,32 @@ public class CredentialsManager {
     }
 
     /**
-     * Stores an IBC related file.
-     * @param fileContents
+     * Returns the encryption password.
+     * @return the encryption password string.
      */
-    public static void storeFile(byte[] fileContents, String fileId) {
-        Log.v(TAG, "File contents for file " + fileId + ": " + new String(fileContents));
-        FileHandler.writeToFile(CREDENTIALS_FOLDER_PATH + fileId, fileContents);
+    public static String getEncryptionPassword() {
+        return loadDataFromFile(ENCRYPTION_PASSWORD_FILE_NAME);
     }
 
+    /**
+     * Stores an IBC related file.
+     * @param fileContents the data in the file as bytes
+     * @param fileId the file name
+     */
+    public static void storeFile(byte[] fileContents, String fileId) {
+        Log.d(TAG, "File contents for file " + fileId + ": " + new String(fileContents));
+        FileHandler.writeToFile(getFullPath(fileId), fileContents);
+    }
+
+    /**
+     * Loads data from a file
+     * @param fileId the file name
+     * @return the data in the file as a string
+     */
     public static String loadDataFromFile(String fileId) {
-        byte[] data = FileHandler.readFromFile(CREDENTIALS_FOLDER_PATH + fileId);
+        byte[] data = FileHandler.readFromFile(getFullPath(fileId));
         String stringData = new String(data);
-        Log.v(TAG, "File contents from file " + fileId + ": " + stringData);
+        Log.d(TAG, "File contents from file " + fileId + ": " + stringData);
         return stringData;
     }
 }
