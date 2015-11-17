@@ -59,8 +59,7 @@ public class FindCloudletsAsyncTask extends CloudletAsyncTask<List<Cloudlet>>
         try
         {
             Log.i("FindCloudletsAsyncTask", "Finding cloudlets");
-            CloudletFinder finder = new CloudletFinder();
-            finder.setEncryptionCredentials(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.getEncryptionPassword());
+            CloudletFinder finder = new CloudletFinder(DeviceIdManager.getDeviceId(this.mContext), new AndroidCredentialsManager());
             return finder.findCloudlets();
         }
         catch(Exception e)

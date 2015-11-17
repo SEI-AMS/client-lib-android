@@ -29,69 +29,55 @@ http://jquery.org/license
 */
 package edu.cmu.sei.ams.cloudlet.android;
 
-import android.content.Context;
-import android.provider.Settings;
 import android.util.Log;
 
+import edu.cmu.sei.ams.cloudlet.ICredentialsManager;
 import edu.cmu.sei.ams.cloudlet.android.utils.FileHandler;
 
 /**
- * Assumes device can store information of only 1 cloudlet at one time.
- * Created by Sebastian on 2015-05-27.
+ * Created by Sebastian on 2015-11-13.
  */
-public class CredentialsManager {
+public class AndroidCredentialsManager implements ICredentialsManager {
     private static final String TAG = "CredentialsManager";
-
     private static final String CREDENTIALS_FOLDER_PATH = "/sdcard/cloudlet/credentials/";
-
     private static final String ENCRYPTION_PASSWORD_FILE_NAME = "encryption_password.txt";
 
     /**
-     * Creates the full path given a file name/id.
-     * @param fileName The name of the file.
-     * @return the full path.
+     * {@inheritDoc}
      */
-    public static String getFullPath(String fileName)
-    {
-        return CREDENTIALS_FOLDER_PATH + fileName;
+    @Override
+    public String getFullPath(String cloudletName, String fileName) {
+        return CREDENTIALS_FOLDER_PATH + "/" + cloudletName + "/" + fileName;
     }
 
     /**
-     * Returns the ID for the device.
-     * @param context the current Android context.
-     * @return a String representing a unique id for the device.
+     * {@inheritDoc}
      */
-    public static String getDeviceId(Context context) {
-        String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        return androidId;
+    @Override
+    public String getEncryptionPassword(String cloudletName) {
+        return loadDataFromFile(cloudletName, ENCRYPTION_PASSWORD_FILE_NAME);
     }
 
     /**
-     * Returns the encryption password.
-     * @return the encryption password string.
+     * {@inheritDoc}
      */
-    public static String getEncryptionPassword() {
-        return loadDataFromFile(ENCRYPTION_PASSWORD_FILE_NAME);
-    }
-
-    /**
-     * Stores an IBC related file.
-     * @param fileContents the data in the file as bytes
-     * @param fileId the file name
-     */
-    public static void storeFile(byte[] fileContents, String fileId) {
+    @Override
+    public void storeFile(String cloudletName, byte[] fileContents, String fileId) {
         Log.d(TAG, "File contents for file " + fileId + ": " + new String(fileContents));
-        FileHandler.writeToFile(getFullPath(fileId), fileContents);
+        FileHandler.writeToFile(getFullPath(cloudletName, fileId), fileContents);
     }
 
     /**
-     * Loads data from a file
-     * @param fileId the file name
-     * @return the data in the file as a string
+     * {@inheritDoc}
      */
-    public static String loadDataFromFile(String fileId) {
-        byte[] data = FileHandler.readFromFile(getFullPath(fileId));
-        String stringData = new String(data);
+    @Override
+    public String loadDataFromFile(String cloudletName, String fileId) {
+        byte[] data = FileHandler.readFromFile(getFullPath(cloudletName, fileId));
+        String stringData = "";
+        if(data == null)
+            Log.e(TAG, "File not found or empty! " + fileId);
+        else
+            stringData = new String(data);
         Log.d(TAG, "File contents from file " + fileId + ": " + stringData);
         return stringData;
     }

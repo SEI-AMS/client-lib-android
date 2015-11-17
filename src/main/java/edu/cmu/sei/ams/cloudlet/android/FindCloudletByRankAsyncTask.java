@@ -32,8 +32,6 @@ package edu.cmu.sei.ams.cloudlet.android;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.CloudletFinder;
 import edu.cmu.sei.ams.cloudlet.rank.CloudletRanker;
@@ -65,8 +63,7 @@ public class FindCloudletByRankAsyncTask extends CloudletAsyncTask<Cloudlet>
         try
         {
             Log.i("FindCloudletByRankAsyncTask", "Finding cloudlets");
-            CloudletFinder finder = new CloudletFinder();
-            finder.setEncryptionCredentials(CredentialsManager.getDeviceId(this.mContext), CredentialsManager.getEncryptionPassword());
+            CloudletFinder finder = new CloudletFinder(DeviceIdManager.getDeviceId(this.mContext), new AndroidCredentialsManager());
             return finder.findCloudletForService(mServiceId, mRanker);
         }
         catch(Exception e)
