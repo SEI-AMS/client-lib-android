@@ -31,6 +31,8 @@ package edu.cmu.sei.ams.cloudlet.android;
 
 import android.util.Log;
 
+import java.io.File;
+
 import edu.cmu.sei.ams.cloudlet.ICredentialsManager;
 import edu.cmu.sei.ams.cloudlet.android.utils.FileHandler;
 
@@ -80,5 +82,14 @@ public class AndroidCredentialsManager implements ICredentialsManager {
             stringData = new String(data);
         Log.d(TAG, "File contents from file " + fileId + ": " + stringData);
         return stringData;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean clearCredentials() {
+        File rootFolder = new File(CREDENTIALS_FOLDER_PATH);
+        return FileHandler.deleteDir(rootFolder);
     }
 }
