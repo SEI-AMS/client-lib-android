@@ -32,6 +32,11 @@ package edu.cmu.sei.ams.cloudlet.android;
 import android.util.Log;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.spec.SecretKeySpec;
 
 import edu.cmu.sei.ams.cloudlet.ICredentialsManager;
 import edu.cmu.sei.ams.cloudlet.android.utils.FileHandler;
@@ -42,7 +47,7 @@ import edu.cmu.sei.ams.cloudlet.android.utils.FileHandler;
 public class AndroidCredentialsManager implements ICredentialsManager {
     private static final String TAG = "CredentialsManager";
     private static final String CREDENTIALS_FOLDER_PATH = "/sdcard/cloudlet/credentials/";
-    private static final String ENCRYPTION_PASSWORD_FILE_NAME = "encryption_password.txt";
+    private static final String PRIVATE_KEY_FILE_NAME = "device.key";
 
     /**
      * {@inheritDoc}
@@ -57,7 +62,41 @@ public class AndroidCredentialsManager implements ICredentialsManager {
      */
     @Override
     public String getEncryptionPassword(String cloudletName) {
-        return loadDataFromFile(cloudletName, ENCRYPTION_PASSWORD_FILE_NAME);
+        String encPassword = "";
+
+        // The encryption password is the SHA256 hash of the private key.
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.reset();
+
+            String privateKey = loadDataFromFile(cloudletName, PRIVATE_KEY_FILE_NAME);
+            byte[] byteData = digest.digest(privateKey.getBytes("UTF-8"));
+
+            encPassword = bytesToHex(byteData);
+            Log.d(TAG, "Password: " + encPassword);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return encPassword;
+    }
+
+    /**
+     *
+     * @param bytes
+     * @return
+     */
+    private static String bytesToHex(byte[] bytes) {
+        char[] hexArray = "0123456789abcdef".toCharArray();
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 
     /**
@@ -82,6 +121,15 @@ public class AndroidCredentialsManager implements ICredentialsManager {
             stringData = new String(data);
         Log.d(TAG, "File contents from file " + fileId + ": " + stringData);
         return stringData;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public byte[] loadBinaryDataFromFile(String cloudletName, String fileId) {
+        byte[] data = FileHandler.readFromFile(getFullPath(cloudletName, fileId));
+        return data;
     }
 
     /**
