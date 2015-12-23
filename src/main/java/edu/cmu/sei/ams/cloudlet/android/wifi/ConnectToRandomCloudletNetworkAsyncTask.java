@@ -68,14 +68,22 @@ public class ConnectToRandomCloudletNetworkAsyncTask  extends CloudletAsyncTask<
     {
         try
         {
-            // Find the valid networks.
-            CloudletNetworkFinder finder = new CloudletNetworkFinder(mContext);
-            List<CloudletNetwork> networks = finder.findNetworks();
-
-            // Connect to first one in list.
-            if(networks.size() > 0)
+            if(CloudletNetwork.isConnectedToValidNetwork(mContext))
             {
-                return networks.get(0).connect(mContext);
+                // If we are already connected to a valid network, do nothing.
+                return true;
+            }
+            else
+            {
+                // Find the valid networks.
+                CloudletNetworkFinder finder = new CloudletNetworkFinder(mContext);
+                List<CloudletNetwork> networks = finder.findNetworks();
+
+                // Connect to first one in list.
+                if (networks.size() > 0)
+                {
+                    return networks.get(0).connect(mContext);
+                }
             }
 
             return false;
