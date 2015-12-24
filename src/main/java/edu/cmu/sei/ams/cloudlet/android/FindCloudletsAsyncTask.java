@@ -34,6 +34,7 @@ import android.util.Log;
 
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.CloudletFinder;
+import edu.cmu.sei.ams.cloudlet.android.wifi.CloudletNetworkSelector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,11 @@ public class FindCloudletsAsyncTask extends CloudletAsyncTask<List<Cloudlet>>
     {
         try
         {
+            // First ensure we are in a valid cloudlet network.
+            boolean success = CloudletNetworkSelector.connectToRandomValidNetwork(mContext);
+            if(!success)
+                throw new Exception("No valid cloudlet networks available.");
+
             Log.i("FindCloudletsAsyncTask", "Finding cloudlets");
             CloudletFinder finder = new CloudletFinder(DeviceIdManager.getDeviceId(this.mContext), new AndroidCredentialsManager());
             return finder.findCloudlets();
