@@ -51,7 +51,6 @@ public class ConnectToRandomCloudletNetworkAsyncTask  extends CloudletAsyncTask<
      * Constructor
      * @param context
      * @param callback
-     * @param ssid
      */
     public ConnectToRandomCloudletNetworkAsyncTask(Context context, CloudletCallback<Boolean> callback)
     {
@@ -68,25 +67,7 @@ public class ConnectToRandomCloudletNetworkAsyncTask  extends CloudletAsyncTask<
     {
         try
         {
-            if(CloudletNetwork.isConnectedToValidNetwork(mContext))
-            {
-                // If we are already connected to a valid network, do nothing.
-                return true;
-            }
-            else
-            {
-                // Find the valid networks.
-                CloudletNetworkFinder finder = new CloudletNetworkFinder(mContext);
-                List<CloudletNetwork> networks = finder.findNetworks();
-
-                // Connect to first one in list.
-                if (networks.size() > 0)
-                {
-                    return networks.get(0).connect(mContext);
-                }
-            }
-
-            return false;
+            return CloudletNetworkSelector.connectToRandomValidNetwork(mContext);
         }
         catch(Exception e)
         {

@@ -64,29 +64,6 @@ public class CloudletNetwork
     }
 
     /**
-     * Checks if the current network is a valid cloudlet network.
-     * @param context the Android context.
-     * @return True if it is valid, false if not or if it is not connected.
-     */
-    public static boolean isConnectedToValidNetwork(Context context)
-    {
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo connection = wifiManager.getConnectionInfo();
-        if(connection != null)
-        {
-            if(isValidNetwork(connection.getSSID().replaceAll("\"", "")))
-            {
-                Log.i(LOG_TAG, "Already connected to a valid network.");
-                return true;
-            }
-            else
-                return false;
-        }
-        else
-            return false;
-    }
-
-    /**
      * Constructor
      * @param ssid network SSID.
      */
