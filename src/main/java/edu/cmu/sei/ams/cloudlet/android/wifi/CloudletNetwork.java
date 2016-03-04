@@ -45,7 +45,7 @@ public class CloudletNetwork
     private static final String LOG_TAG = "CloudletNetwork";
 
     // Prefix to identify a valid network.
-    public static final String PREFIX = "cloudlet-";
+    public static final String PREFIX = "cloudlet";
 
     // The network's ssid.
     private String ssid;

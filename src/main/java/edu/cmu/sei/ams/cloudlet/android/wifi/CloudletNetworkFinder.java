@@ -179,6 +179,7 @@ public class CloudletNetworkFinder extends BroadcastReceiver
             List<CloudletNetwork> newNetworks = new ArrayList<CloudletNetwork>();
             for(ScanResult result : scanResults)
             {
+                Log.v("CloudletNetworkFinder", "Found network: " + result.SSID);
                 if(CloudletNetwork.isValidNetwork(result.SSID))
                 {
                     CloudletNetwork network = new CloudletNetwork(result.SSID);
