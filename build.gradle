@@ -1,94 +1,26 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-sourceCompatibility = 1.5
-
-def artifactId = projectDir.name
-group = 'edu.cmu.sei.ams.cloudlet'
-def groupId = group
-version = '3.0.0'
-
-wrapper {
-    gradleVersion = '2.3'
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-dependencies {
-    compile (
-        'edu.cmu.sei.ams.cloudlet:client-lib:2.2.0',
-        'com.google.android:android:4.1.1.4'
-    )
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-signing {
-    required { gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-// NOTE: to test the library locally, "gradlew install" can be used. This requires maven to be installed locally, and a local .m2 repo to exist.
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: project.hasProperty('ossrhUsername')?ossrhUsername:'', password: project.hasProperty('ossrhPassword')?ossrhPassword:'')
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: project.hasProperty('ossrhUsername')?ossrhUsername:'', password: project.hasProperty('ossrhPassword')?ossrhPassword:'')
-      }
-
-      pom.project {
-        name 'Cloudlet Client Android Library'
-        packaging 'jar'
-        // optionally artifactId can be defined here 
-        description 'A library adding Android support for communicating with cloudlets from an Android app.'
-        url 'https://github.com/SEI-AMS/client-lib-android'
-
-        scm {
-          connection 'scm:git:git@github.com:SEI-AMS/client-lib-android.git'
-          developerConnection 'scm:git:git@github.com:SEI-AMS/client-lib-android.git'
-          url 'git@github.com:SEI-AMS/client-lib-android.git'
-        }
-
-        licenses {
-          license {
-            name 'KD-Cloudlet license'
-            url 'https://github.com/SEI-AMS/client-lib-android/blob/master/LICENSE'
-          }
-        }
-
-        developers {
-          developer {
-            name 'Sebastian Echeverria'
-            email 'secheverria@sei.cmu.edu'
-            organization 'Software Engineering Institute'
-            organizationUrl 'https://github.com/SEI-AMS'
-          }
-        }
-      }
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
     }
-  }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }

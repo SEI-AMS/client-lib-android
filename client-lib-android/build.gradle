@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+def libVersionName = "3.0.0"
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 10
+        versionName libVersionName
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'edu.cmu.sei.ams.cloudlet:client-lib:2.2.0'
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'client-lib-android'
+
+    publishedGroupId = 'edu.cmu.sei.ams.cloudlet'
+    libraryName = 'Cloudlet Client Android Library'
+    artifact = 'client-lib-android'
+
+    libraryDescription = 'A library adding Android support for communicating with cloudlets from an Android app.'
+
+    siteUrl = 'https://github.com/SEI-AMS/client-lib-android'
+    gitUrl = 'https://github.com/SEI-AMS/client-lib-android.git'
+
+    libraryVersion = libVersionName
+
+    developerId = 'sebastian-echeverria'
+    developerName = 'Sebastian Echeverria'
+    developerEmail = 'secheverria@sei.cmu.edu'
+
+    licenseName = 'KD-Cloudlet license'
+    licenseUrl = 'https://github.com/SEI-AMS/client-lib-android/blob/master/LICENSE'
+    allLicenses = ["KD-Cloudlet"]
+}
+
+apply from: '../installv1.gradle'
+apply from: '../bintrayv1.gradle'
