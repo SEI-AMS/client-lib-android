@@ -52,7 +52,7 @@ public class AndroidCredentialsManager implements ICredentialsManager {
      */
     @Override
     public String getFullPath(String cloudletName, String fileName) {
-        return CREDENTIALS_FOLDER_PATH + "/" + cloudletName + "/" + fileName;
+        return CREDENTIALS_FOLDER_PATH + cloudletName + "/" + fileName;
     }
 
     /**

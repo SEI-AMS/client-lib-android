@@ -19,9 +19,13 @@ public class FileHandler {
             // Create the folders.
             Log.v(TAG, "Creating folder for file " + filePath + ".");
             File folders = new File((new File(filePath)).getParent());
-            folders.mkdirs();
+            boolean folderWasCreated = folders.mkdirs();
+            if(!folderWasCreated)
+            {
+                Log.w(TAG, "Folder " + folders + " could not be created.");
+            }
 
-            // Write the id to the file.
+            // Write the data to the file.
             Log.v(TAG, "Writing to file " + filePath + ".");
             FileOutputStream writer = new FileOutputStream(filePath);
             writer.write(data);

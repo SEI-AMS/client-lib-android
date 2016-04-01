@@ -30,6 +30,7 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android.security;
 
 import android.content.Context;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.FileNotFoundException;
 import java.security.cert.CertificateException;
@@ -39,17 +40,24 @@ import edu.cmu.sei.ams.cloudlet.android.DeviceIdManager;
 
 /**
  */
-class PairedDataBundleHandler implements Runnable {
+class PairedDataBundleHandler {
 
     private static final String RADIUS_CERT_NAME = "radius.pem";
-
-    private AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
 
     /**
      * Stores an incoming paired data bundle, and creates the associated profile.
      */
     public void handleData(Context context, String cloudletName, String networkId, String authPassword, String radiusServerCertData)
             throws CertificateException, FileNotFoundException {
+        AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
+
+        if(networkId == null)
+            throw new RuntimeException("Invalid network SSID.");
+        if(authPassword == null)
+            throw new RuntimeException("Invalid auth password.");
+        if(radiusServerCertData == null)
+            throw new RuntimeException("Invalid cert data.");
+
         // Store certificate.
         credentialsManager.storeFile(cloudletName, radiusServerCertData.getBytes(), PairedDataBundleHandler.RADIUS_CERT_NAME);
         String serverCertificatePath = credentialsManager.getFullPath(cloudletName, PairedDataBundleHandler.RADIUS_CERT_NAME);
@@ -61,12 +69,8 @@ class PairedDataBundleHandler implements Runnable {
 
         // Create profile.
         String deviceId = DeviceIdManager.getDeviceId(context);
-        WifiProfileManager.setupWPA2WifiProfile(networkId, serverCertificatePath, deviceId,
-                                                authPassword, context);
-    }
 
-    @Override
-    public void run() {
-
+        // TODO: uncomment this to actually test profile creation.
+        //WifiProfileManager.setupWPA2WifiProfile(networkId, serverCertificatePath, deviceId, authPassword, context);
     }
 }

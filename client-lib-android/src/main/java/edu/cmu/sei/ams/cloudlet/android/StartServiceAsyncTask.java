@@ -34,6 +34,7 @@ import android.util.Log;
 
 import edu.cmu.sei.ams.cloudlet.Service;
 import edu.cmu.sei.ams.cloudlet.ServiceVM;
+import edu.cmu.sei.ams.cloudlet.android.security.DeviceMessageHandler;
 
 /**
  * User: jdroot
@@ -64,7 +65,23 @@ public class StartServiceAsyncTask extends CloudletAsyncTask<ServiceVM>
     {
         try
         {
-            return mService.startService();
+            ServiceVM serviceVM = mService.startService();
+
+            // TODO: Avoid creating duplicate threads... and somehow handle how to stop them.
+            boolean serviceVMWasStarted = serviceVM != null;
+            if(serviceVMWasStarted)
+            {
+                Thread messagesThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DeviceMessageHandler handler = new DeviceMessageHandler();
+                        handler.execute(mContext, mService.getCloudlet());
+                    }
+                });
+                messagesThread.start();
+            }
+
+            return serviceVM;
         }
         catch(Exception e)
         {

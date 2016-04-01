@@ -29,7 +29,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'edu.cmu.sei.ams.cloudlet:client-lib:2.2.0'
+    compile 'edu.cmu.sei.ams.cloudlet:client-lib:3.0.0'
+    compile 'commons-codec:commons-codec:1.6'
 }
 
 ext {
