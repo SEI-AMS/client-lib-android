@@ -32,9 +32,12 @@ package edu.cmu.sei.ams.cloudlet.android;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.HashMap;
+
+import edu.cmu.sei.ams.cloudlet.IDeviceMessageHandler;
 import edu.cmu.sei.ams.cloudlet.Service;
 import edu.cmu.sei.ams.cloudlet.ServiceVM;
-import edu.cmu.sei.ams.cloudlet.android.security.DeviceMessageHandler;
+import edu.cmu.sei.ams.cloudlet.android.security.PairedDataBundleHandler;
 
 /**
  * User: jdroot
@@ -65,22 +68,9 @@ public class StartServiceAsyncTask extends CloudletAsyncTask<ServiceVM>
     {
         try
         {
-            ServiceVM serviceVM = mService.startService();
-
-            // TODO: Avoid creating duplicate threads... and somehow handle how to stop them.
-            boolean serviceVMWasStarted = serviceVM != null;
-            if(serviceVMWasStarted)
-            {
-                Thread messagesThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        DeviceMessageHandler handler = new DeviceMessageHandler();
-                        handler.execute(mContext, mService.getCloudlet());
-                    }
-                });
-                messagesThread.start();
-            }
-
+            HashMap<String, IDeviceMessageHandler> handlers = new HashMap<>();
+            handlers.put("add-trusted-cloudlet", new PairedDataBundleHandler(mContext));
+            ServiceVM serviceVM = mService.startService(handlers);
             return serviceVM;
         }
         catch(Exception e)

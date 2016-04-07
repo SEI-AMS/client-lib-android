@@ -43,7 +43,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import edu.cmu.sei.ams.cloudlet.android.AndroidCredentialsManager;
 import edu.cmu.sei.ams.cloudlet.android.DeviceIdManager;
 
 /**

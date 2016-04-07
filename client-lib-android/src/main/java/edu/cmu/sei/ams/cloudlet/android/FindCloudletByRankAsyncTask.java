@@ -34,6 +34,7 @@ import android.util.Log;
 
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.CloudletFinder;
+import edu.cmu.sei.ams.cloudlet.android.security.AndroidCredentialsManager;
 import edu.cmu.sei.ams.cloudlet.android.wifi.CloudletNetworkSelector;
 import edu.cmu.sei.ams.cloudlet.rank.CloudletRanker;
 

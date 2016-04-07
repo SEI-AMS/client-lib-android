@@ -38,6 +38,7 @@ import edu.cmu.sei.ams.cloudlet.App;
 import edu.cmu.sei.ams.cloudlet.AppFilter;
 import edu.cmu.sei.ams.cloudlet.AppFinder;
 import edu.cmu.sei.ams.cloudlet.CloudletFinder;
+import edu.cmu.sei.ams.cloudlet.android.security.AndroidCredentialsManager;
 import edu.cmu.sei.ams.cloudlet.android.wifi.CloudletNetworkSelector;
 
 /**

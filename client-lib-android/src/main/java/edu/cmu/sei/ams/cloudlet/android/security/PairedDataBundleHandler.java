@@ -30,33 +30,45 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android.security;
 
 import android.content.Context;
-import org.apache.commons.codec.binary.Base64;
+import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.security.cert.CertificateException;
+import java.util.HashMap;
 
-import edu.cmu.sei.ams.cloudlet.android.AndroidCredentialsManager;
+import edu.cmu.sei.ams.cloudlet.MessageException;
 import edu.cmu.sei.ams.cloudlet.android.DeviceIdManager;
+import edu.cmu.sei.ams.cloudlet.IDeviceMessageHandler;
 
 /**
  */
-class PairedDataBundleHandler {
+public class PairedDataBundleHandler implements IDeviceMessageHandler {
 
     private static final String RADIUS_CERT_NAME = "radius.pem";
+    private Context context;
+
+    public PairedDataBundleHandler(Context context) {
+        this.context = context;
+    }
 
     /**
      * Stores an incoming paired data bundle, and creates the associated profile.
      */
-    public void handleData(Context context, String cloudletName, String networkId, String authPassword, String radiusServerCertData)
-            throws CertificateException, FileNotFoundException {
+    public void handleData(HashMap<String, String> data)
+            throws MessageException {
+        Log.v("PairedDataBundleHandler", "Params:" + data);
+
+        String cloudletName = data.get("cloudlet_name");
+        String networkId = data.get("ssid");
+        String authPassword = data.get("auth_password");
+        String radiusServerCertData = data.get("server_radius_cert");
+
         AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
 
         if(networkId == null)
-            throw new RuntimeException("Invalid network SSID.");
+            throw new MessageException("Invalid network SSID.");
         if(authPassword == null)
-            throw new RuntimeException("Invalid auth password.");
+            throw new MessageException("Invalid auth password.");
         if(radiusServerCertData == null)
-            throw new RuntimeException("Invalid cert data.");
+            throw new MessageException("Invalid cert data.");
 
         // Store certificate.
         credentialsManager.storeFile(cloudletName, radiusServerCertData.getBytes(), PairedDataBundleHandler.RADIUS_CERT_NAME);
@@ -71,6 +83,14 @@ class PairedDataBundleHandler {
         String deviceId = DeviceIdManager.getDeviceId(context);
 
         // TODO: uncomment this to actually test profile creation.
-        //WifiProfileManager.setupWPA2WifiProfile(networkId, serverCertificatePath, deviceId, authPassword, context);
+        /*
+        try {
+            WifiProfileManager.setupWPA2WifiProfile(networkId, serverCertificatePath, deviceId, authPassword, context);
+            Log.v("PairedDataBundleHandler", "Wi-fi Profile generated");
+        } catch (CertificateException e) {
+            throw new MessageException(e);
+        } catch (FileNotFoundException e) {
+            throw new MessageException(e);
+        }*/
     }
 }
