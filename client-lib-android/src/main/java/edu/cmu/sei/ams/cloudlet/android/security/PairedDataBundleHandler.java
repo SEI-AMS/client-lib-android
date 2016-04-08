@@ -32,17 +32,26 @@ package edu.cmu.sei.ams.cloudlet.android.security;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.FileNotFoundException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 
+import edu.cmu.sei.ams.cloudlet.Cloudlet;
+import edu.cmu.sei.ams.cloudlet.ICurrentCloudlerHolder;
 import edu.cmu.sei.ams.cloudlet.MessageException;
 import edu.cmu.sei.ams.cloudlet.android.DeviceIdManager;
 import edu.cmu.sei.ams.cloudlet.IDeviceMessageHandler;
+import edu.cmu.sei.ams.cloudlet.impl.CloudletImpl;
 
 /**
  */
 public class PairedDataBundleHandler implements IDeviceMessageHandler {
 
     private static final String RADIUS_CERT_NAME = "radius.pem";
+    private static final String DEVICE_PRIVATE_KEY_NAME = "device-private.key";
+
     private Context context;
 
     public PairedDataBundleHandler(Context context) {
@@ -52,16 +61,18 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler {
     /**
      * Stores an incoming paired data bundle, and creates the associated profile.
      */
-    public void handleData(HashMap<String, String> data)
+    public void handleData(HashMap<String, String> data, ICurrentCloudlerHolder currentCloudlerHolder)
             throws MessageException {
         Log.v("PairedDataBundleHandler", "Params:" + data);
 
         String cloudletName = data.get("cloudlet_name");
+        String cloudletFqdn = data.get("cloudlet_fqdn");
+        String cloudletPort = data.get("cloudlet_port");
+        boolean cloudletEncryptionEnabled = data.get("cloudlet_encryption_enabled") == "True";
         String networkId = data.get("ssid");
         String authPassword = data.get("auth_password");
+        String devicePrivateKey = data.get("device_private_key");
         String radiusServerCertData = data.get("server_radius_cert");
-
-        AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
 
         if(networkId == null)
             throw new MessageException("Invalid network SSID.");
@@ -69,10 +80,17 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler {
             throw new MessageException("Invalid auth password.");
         if(radiusServerCertData == null)
             throw new MessageException("Invalid cert data.");
+        if(devicePrivateKey == null)
+            throw new MessageException("Invalid device private key.");
+
+        AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
 
         // Store certificate.
         credentialsManager.storeFile(cloudletName, radiusServerCertData.getBytes(), PairedDataBundleHandler.RADIUS_CERT_NAME);
         String serverCertificatePath = credentialsManager.getFullPath(cloudletName, PairedDataBundleHandler.RADIUS_CERT_NAME);
+
+        // Store device private key.
+        credentialsManager.storeFile(cloudletName, devicePrivateKey.getBytes(), PairedDataBundleHandler.DEVICE_PRIVATE_KEY_NAME);
 
         // Store other profile info in case we want to create the profile again.
         credentialsManager.storeFile(cloudletName, networkId.getBytes(), WifiProfileManager.SSID_FILE_NAME);
@@ -81,16 +99,22 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler {
 
         // Create profile.
         String deviceId = DeviceIdManager.getDeviceId(context);
-
-        // TODO: uncomment this to actually test profile creation.
-        /*
         try {
             WifiProfileManager.setupWPA2WifiProfile(networkId, serverCertificatePath, deviceId, authPassword, context);
-            Log.v("PairedDataBundleHandler", "Wi-fi Profile generated");
+            Log.v("PairedDataBundleHandler", "Wi-fi profile with SSID " + networkId + " generated");
         } catch (CertificateException e) {
             throw new MessageException(e);
         } catch (FileNotFoundException e) {
             throw new MessageException(e);
-        }*/
+        }
+
+        // We need to change the cloudlet the message thread is pinging to.
+        try {
+            Cloudlet newCloudlet = new CloudletImpl(cloudletName, InetAddress.getByName(cloudletFqdn),
+                    Integer.parseInt(cloudletPort), cloudletEncryptionEnabled, deviceId, credentialsManager);
+            currentCloudlerHolder.setCurrentCloudlet(newCloudlet);
+        } catch (UnknownHostException e) {
+            throw new MessageException("Invalid cloudlet FQDN: " + cloudletFqdn);
+        }
     }
 }
