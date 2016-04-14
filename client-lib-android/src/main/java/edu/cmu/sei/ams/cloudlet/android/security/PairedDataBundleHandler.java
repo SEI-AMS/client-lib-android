@@ -108,13 +108,21 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler {
             throw new MessageException(e);
         }
 
+        // Wait a few seconds for a connecion to the new Wi-Fi network.
+        int waitTimeMilliseconds = 5 * 1000;
+        try {
+            Thread.sleep(waitTimeMilliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // We need to change the cloudlet the message thread is pinging to.
         try {
             Cloudlet newCloudlet = new CloudletImpl(cloudletName, InetAddress.getByName(cloudletFqdn),
                     Integer.parseInt(cloudletPort), cloudletEncryptionEnabled, deviceId, credentialsManager);
             currentCloudlerHolder.setCurrentCloudlet(newCloudlet);
         } catch (UnknownHostException e) {
-            throw new MessageException("Invalid cloudlet FQDN: " + cloudletFqdn);
+            throw new MessageException("Can't find cloudlet qith FQDN: " + cloudletFqdn);
         }
     }
 }
