@@ -32,11 +32,11 @@ def getSnapshotRepositoryUrl() {
 }
 
 def getRepositoryUsername() {
-    return hasProperty('NEXUS_USERNAME') ? ossrhUsername : ""
+    return hasProperty('ossrhUsername') ? ossrhUsername : ""
 }
 
 def getRepositoryPassword() {
-    return hasProperty('NEXUS_PASSWORD') ? ossrhPassword : ""
+    return hasProperty('ossrhPassword') ? ossrhPassword : ""
 }
 
 def pomDetails = {
@@ -72,7 +72,6 @@ afterEvaluate { project ->
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                pom.groupId = group
                 pom.artifactId = POM_ARTIFACT_ID
 
                 repository(url: getReleaseRepositoryUrl()) {
