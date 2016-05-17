@@ -33,6 +33,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
@@ -123,6 +124,8 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler {
             currentCloudlerHolder.setCurrentCloudlet(newCloudlet);
         } catch (UnknownHostException e) {
             throw new MessageException("Can't resolve cloudlet with FQDN: " + cloudletFqdn);
+        } catch (IOException e) {
+            throw new MessageException("Can't find password for cloudlet with: " + cloudletFqdn);
         }
     }
 }

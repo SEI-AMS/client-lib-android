@@ -32,6 +32,7 @@ package edu.cmu.sei.ams.cloudlet.android.security;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -68,13 +69,17 @@ public class AndroidCredentialsManager implements ICredentialsManager {
             digest.reset();
 
             String privateKey = loadDataFromFile(cloudletName, PRIVATE_KEY_FILE_NAME);
+            if(privateKey.equals(""))
+            {
+                throw new IOException("No encryption password found.");
+            }
             byte[] byteData = digest.digest(privateKey.getBytes("UTF-8"));
 
             encPassword = bytesToHex(byteData);
             Log.d(TAG, "Password: " + encPassword);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
