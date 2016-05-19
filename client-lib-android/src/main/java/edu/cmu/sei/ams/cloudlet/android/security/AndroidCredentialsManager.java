@@ -46,7 +46,7 @@ import edu.cmu.sei.ams.cloudlet.android.utils.FileHandler;
 public class AndroidCredentialsManager implements ICredentialsManager {
     private static final String TAG = "CredentialsManager";
     private static final String CREDENTIALS_FOLDER_PATH = "/sdcard/cloudlet/credentials/";
-    private static final String PRIVATE_KEY_FILE_NAME = "device.key";
+    public static final String PRIVATE_KEY_FILE_NAME = "device.key";
 
     /**
      * {@inheritDoc}

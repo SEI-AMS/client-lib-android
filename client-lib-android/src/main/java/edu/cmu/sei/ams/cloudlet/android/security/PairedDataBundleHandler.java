@@ -51,7 +51,6 @@ import edu.cmu.sei.ams.cloudlet.impl.CloudletImpl;
 public class PairedDataBundleHandler implements IDeviceMessageHandler {
 
     private static final String RADIUS_CERT_NAME = "radius.pem";
-    private static final String DEVICE_PRIVATE_KEY_NAME = "device-private.key";
 
     private Context context;
 
@@ -91,7 +90,7 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler {
         String serverCertificatePath = credentialsManager.getFullPath(cloudletName, PairedDataBundleHandler.RADIUS_CERT_NAME);
 
         // Store device private key.
-        credentialsManager.storeFile(cloudletName, devicePrivateKey.getBytes(), PairedDataBundleHandler.DEVICE_PRIVATE_KEY_NAME);
+        credentialsManager.storeFile(cloudletName, devicePrivateKey.getBytes(), AndroidCredentialsManager.PRIVATE_KEY_FILE_NAME);
 
         // Store other profile info in case we want to create the profile again.
         credentialsManager.storeFile(cloudletName, networkId.getBytes(), WifiProfileManager.SSID_FILE_NAME);
