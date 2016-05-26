@@ -37,8 +37,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import edu.cmu.sei.ams.cloudlet.MessageException;
-
 /**
  * Created by Sebastian on 2016-05-26.
  */
@@ -91,6 +89,7 @@ public class APConnectedBroadcastReceiver extends BroadcastReceiver
 
                 // We connected to the expected SSID, tell thread to move to poll new cloudlet.
                 try {
+                    // TODO: wait till we get an IP? This would need another broadcast receiver....
                     _threadMover.moveMessagePollingThreadToNewCloudlet();
                 } catch (Exception e) {
                     Log.v("APConnectedBR", "Error moving polling thread to new thread: " + e.toString());

@@ -29,7 +29,6 @@ http://jquery.org/license
 */
 package edu.cmu.sei.ams.cloudlet.android.security;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
@@ -58,6 +57,7 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler, IMessageP
     private Context context;
     private ICurrentCloudlerHolder _cloudletHolder;
     private CloudletDataBundle _cloudletData;
+    private APConnectedBroadcastReceiver _broadcastReceiver;
 
     /**
      *
@@ -134,13 +134,13 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler, IMessageP
         _cloudletData = cloudletData;
         _cloudletHolder = currentCloudlerHolder;
 
-        APConnectedBroadcastReceiver broadcastReceiver = new APConnectedBroadcastReceiver();
-        broadcastReceiver.setExpectedSSID(cloudletData.getCloudletSSID());
-        broadcastReceiver.setThreadMover(this);
+        _broadcastReceiver = new APConnectedBroadcastReceiver();
+        _broadcastReceiver.setExpectedSSID(cloudletData.getCloudletSSID());
+        _broadcastReceiver.setThreadMover(this);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-        context.registerReceiver(broadcastReceiver, intentFilter);
+        context.registerReceiver(_broadcastReceiver, intentFilter);
     }
 
     /**
@@ -149,6 +149,8 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler, IMessageP
     @Override
     public void moveMessagePollingThreadToNewCloudlet() throws MessageException {
         try {
+            context.unregisterReceiver(_broadcastReceiver);
+
             // Try to get the IP of the new cloudlet.
             InetAddress cloudletInetAddress = InetAddress.getByName(_cloudletData.getCloudletFqdn());
 
