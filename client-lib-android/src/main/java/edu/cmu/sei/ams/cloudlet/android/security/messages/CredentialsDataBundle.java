@@ -1,4 +1,4 @@
-package edu.cmu.sei.ams.cloudlet.android.security;
+package edu.cmu.sei.ams.cloudlet.android.security.messages;
 
 import java.util.HashMap;
 

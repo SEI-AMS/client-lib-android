@@ -27,7 +27,7 @@ Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors
 Released under the MIT license
 http://jquery.org/license
 */
-package edu.cmu.sei.ams.cloudlet.android.security;
+package edu.cmu.sei.ams.cloudlet.android.security.messages;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -37,7 +37,8 @@ import java.util.HashMap;
 import edu.cmu.sei.ams.cloudlet.IDeviceMessageHandler;
 import edu.cmu.sei.ams.cloudlet.Service;
 import edu.cmu.sei.ams.cloudlet.ServiceVM;
-import edu.cmu.sei.ams.cloudlet.android.security.PairedDataBundleHandler;
+import edu.cmu.sei.ams.cloudlet.android.security.messages.MoveToNewCloudletHandler;
+import edu.cmu.sei.ams.cloudlet.android.security.messages.AddTrustedCloudletHandler;
 
 /**
  * User: jdroot
@@ -69,7 +70,8 @@ public class StartServiceAsyncTask extends CloudletAsyncTask<ServiceVM>
         try
         {
             HashMap<String, IDeviceMessageHandler> handlers = new HashMap<>();
-            handlers.put("add-trusted-cloudlet", new PairedDataBundleHandler(mContext));
+            handlers.put("add-trusted-cloudlet", new AddTrustedCloudletHandler(mContext));
+            handlers.put("move-to-new-cloudlet-network", new MoveToNewCloudletHandler(mContext));
             ServiceVM serviceVM = mService.startService(handlers);
             return serviceVM;
         }
