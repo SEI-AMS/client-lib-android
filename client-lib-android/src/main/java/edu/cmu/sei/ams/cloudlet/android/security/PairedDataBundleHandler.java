@@ -53,6 +53,7 @@ import edu.cmu.sei.ams.cloudlet.impl.CloudletImpl;
 public class PairedDataBundleHandler implements IDeviceMessageHandler, IMessagePollingThreadMover {
 
     private static final String RADIUS_CERT_NAME = "radius.pem";
+    private static final String GENERIC_CLOUDLET_FQDN = "cloudlet.svm.cloudlet.local.";
 
     private Context context;
     private ICurrentCloudlerHolder _cloudletHolder;
@@ -152,7 +153,9 @@ public class PairedDataBundleHandler implements IDeviceMessageHandler, IMessageP
             context.unregisterReceiver(_broadcastReceiver);
 
             // Try to get the IP of the new cloudlet.
-            InetAddress cloudletInetAddress = InetAddress.getByName(_cloudletData.getCloudletFqdn());
+            // Cloudlet FQDN is useless here, since it is only resolvable from inside the cloudlet.
+            // We will use the standard cloudlet domain understood by the DNS server.
+            InetAddress cloudletInetAddress = InetAddress.getByName(GENERIC_CLOUDLET_FQDN);
 
             AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
             String deviceId = DeviceIdManager.getDeviceId(context);

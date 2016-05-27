@@ -89,7 +89,11 @@ public class APConnectedBroadcastReceiver extends BroadcastReceiver
 
                 // We connected to the expected SSID, tell thread to move to poll new cloudlet.
                 try {
-                    // TODO: wait till we get an IP? This would need another broadcast receiver....
+                    // Wait a few seconds just in case we have not obtained the DHCP info yet.
+                    // TODO: This would need another broadcast receiver to be done properly.
+                    int waitTimeInMS = 2 * 1000;
+                    Thread.sleep(waitTimeInMS);
+
                     _threadMover.moveMessagePollingThreadToNewCloudlet();
                 } catch (Exception e) {
                     Log.v("APConnectedBR", "Error moving polling thread to new thread: " + e.toString());
