@@ -31,13 +31,17 @@ package edu.cmu.sei.ams.cloudlet.android.security.messages;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.HandlerThread;
 import android.util.Log;
+import android.os.Handler;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 
 import edu.cmu.sei.ams.cloudlet.Cloudlet;
 import edu.cmu.sei.ams.cloudlet.ICurrentCloudlerHolder;
@@ -73,9 +77,40 @@ public class MoveToNewCloudletHandler implements IDeviceMessageHandler, IMessage
             throws MessageException {
         Log.v(LOG_TAG, "Params:" + data);
 
-        // Get cloudlet data, and set broadcast receiver to move thread.
         CloudletDataBundle cloudletData = new CloudletDataBundle(data);
+
+        // Set broadcast receiver to move thread.
         setThreadMoverBroadcastReceiver(cloudletData, currentCloudlerHolder);
+
+        // Try to connect to the new AP.
+        connectToExistingNetwork(cloudletData);
+    }
+
+    /**
+     * Connects to the given existing network.
+     */
+    private void connectToExistingNetwork(CloudletDataBundle cloudletData)
+    {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+        boolean isFound = false;
+        List<WifiConfiguration> existingNetworks = wifiManager.getConfiguredNetworks();
+        for(WifiConfiguration currentConfig : existingNetworks)
+        {
+            String currentSSID = currentConfig.SSID.replaceAll("^\"(.*)\"$", "$1");
+            if(currentSSID.equals(cloudletData.getCloudletSSID()))
+            {
+                Log.w(LOG_TAG, "Connecting to SSID " + cloudletData.getCloudletSSID());
+                int networkId = currentConfig.networkId;
+                wifiManager.enableNetwork(networkId, true);
+                isFound = true;
+            }
+        }
+
+        if(!isFound)
+        {
+            Log.w(LOG_TAG, "Existing network with SSID " + cloudletData.getCloudletSSID() + " was not found.");
+        }
     }
 
     /**
@@ -89,9 +124,14 @@ public class MoveToNewCloudletHandler implements IDeviceMessageHandler, IMessage
         _broadcastReceiver.setExpectedSSID(cloudletData.getCloudletSSID());
         _broadcastReceiver.setThreadMover(this);
 
+        // Create a thread to process the notification when we have connected to a network.
+        HandlerThread handlerThread = new HandlerThread("APBroadcastReceiver");
+        handlerThread.start();
+        Handler handler = new Handler(handlerThread.getLooper());
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-        context.registerReceiver(_broadcastReceiver, intentFilter);
+        context.registerReceiver(_broadcastReceiver, intentFilter, null, handler);
     }
 
     /**

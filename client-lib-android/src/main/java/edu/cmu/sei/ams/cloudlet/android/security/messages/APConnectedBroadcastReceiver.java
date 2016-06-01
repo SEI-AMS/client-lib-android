@@ -43,6 +43,8 @@ import android.util.Log;
 public class APConnectedBroadcastReceiver extends BroadcastReceiver
 
 {
+    private static final String LOG_TAG = "APConnectedBR";
+
     private String _expectedSSID;
     private IMessagePollingThreadMover _threadMover;
 
@@ -77,26 +79,29 @@ public class APConnectedBroadcastReceiver extends BroadcastReceiver
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiNetworkInfo = wifiManager.getConnectionInfo();
                 if (wifiNetworkInfo == null) {
-                    Log.v("APConnectedBR", "Associated to AP, but got no network info...");
+                    Log.e(LOG_TAG, "Associated to AP, but got no network info...");
                     return;
                 }
 
                 // We have information about the new network we connected to.
-                if(!wifiNetworkInfo.getSSID().equals(_expectedSSID)) {
-                    Log.v("APConnectedBR", "Did not connect to expected SSID " + _expectedSSID + ", connected to SSID " + wifiNetworkInfo.getSSID() + " instead.");
+                String connectedSSID = wifiNetworkInfo.getSSID().replaceAll("^\"(.*)\"$", "$1");
+                if(!connectedSSID.equals(_expectedSSID)) {
+                    Log.w(LOG_TAG, "Did not connect to expected SSID " + _expectedSSID + ", connected to SSID " + connectedSSID + " instead.");
                     return;
                 }
 
                 // We connected to the expected SSID, tell thread to move to poll new cloudlet.
+                Log.w(LOG_TAG, "Connected to SSID " + connectedSSID);
                 try {
                     // Wait a few seconds just in case we have not obtained the DHCP info yet.
                     // TODO: This would need another broadcast receiver to be done properly.
-                    int waitTimeInMS = 2 * 1000;
+                    int waitTimeInMS = 3 * 1000;
                     Thread.sleep(waitTimeInMS);
 
                     _threadMover.moveMessagePollingThreadToNewCloudlet();
                 } catch (Exception e) {
-                    Log.v("APConnectedBR", "Error moving polling thread to new thread: " + e.toString());
+                    Log.e(LOG_TAG, "Error moving polling thread to new thread: " + e.toString());
+                    e.printStackTrace();
                 }
             }
         }

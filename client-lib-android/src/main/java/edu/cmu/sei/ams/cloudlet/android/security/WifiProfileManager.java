@@ -122,8 +122,6 @@ public class WifiProfileManager {
             throw new RuntimeException(errorMessage);
         }
         else {
-            // Ensure it is enabled by default, and that this new config has been stored.
-            wifiManager.enableNetwork(netword_profile_id, true);
             wifiManager.saveConfiguration();
             Log.v(TAG, "Wi-Fi configuration stored with id " + netword_profile_id);
             return netword_profile_id;
