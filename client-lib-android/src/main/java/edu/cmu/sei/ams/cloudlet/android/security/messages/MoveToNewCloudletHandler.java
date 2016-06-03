@@ -135,17 +135,16 @@ public class MoveToNewCloudletHandler implements IDeviceMessageHandler, IMessage
     }
 
     /**
-     * Moves the thread polling for new messags to start doing it to a new cloudlet.
+     * Moves the thread polling for new messages to start doing it to a new cloudlet.
      */
     @Override
     public void moveMessagePollingThreadToNewCloudlet() throws MessageException {
         try {
             context.unregisterReceiver(_broadcastReceiver);
+            Log.v(LOG_TAG, "Changing cloudlet to poll to: " + _cloudletData.getCloudletIP());
 
-            // Try to get the IP of the new cloudlet.
-            // Cloudlet FQDN is useless here, since it is only resolvable from inside the cloudlet.
-            // We will use the standard cloudlet domain understood by the DNS server.
-            InetAddress cloudletInetAddress = InetAddress.getByName(GENERIC_CLOUDLET_FQDN);
+            // Convert the IP of the new cloudlet.
+            InetAddress cloudletInetAddress = InetAddress.getByName(_cloudletData.getCloudletIP());
 
             AndroidCredentialsManager credentialsManager = new AndroidCredentialsManager();
             String deviceId = DeviceIdManager.getDeviceId(context);
@@ -159,7 +158,7 @@ public class MoveToNewCloudletHandler implements IDeviceMessageHandler, IMessage
                     credentialsManager);
             _cloudletHolder.setCurrentCloudlet(newCloudlet);
         } catch (UnknownHostException e) {
-            throw new MessageException("Can't resolve cloudlet with FQDN: " + _cloudletData.getCloudletFqdn());
+            throw new MessageException("Can't resolve cloudlet with IP: " + _cloudletData.getCloudletIP());
         } catch (IOException e) {
             throw new MessageException("Can't find password for cloudlet with: " + _cloudletData.getCloudletFqdn());
         }
