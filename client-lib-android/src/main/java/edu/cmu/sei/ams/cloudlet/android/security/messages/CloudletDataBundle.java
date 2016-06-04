@@ -23,7 +23,7 @@ public class CloudletDataBundle {
         _cloudletFqdn = data.get("cloudlet_fqdn");
         _cloudletIP = data.get("cloudlet_ip");
         _cloudletPort = Integer.parseInt(data.get("cloudlet_port"));
-        _cloudletEncryptionEnabled = data.get("cloudlet_encryption_enabled").equals("True");
+        _cloudletEncryptionEnabled = data.get("cloudlet_encryption_enabled").equals("true");
         _cloudletSSID = data.get("ssid");
 
         if(_cloudletName == null)
