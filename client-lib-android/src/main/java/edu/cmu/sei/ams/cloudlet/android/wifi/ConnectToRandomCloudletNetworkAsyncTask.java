@@ -56,7 +56,7 @@ public class ConnectToRandomCloudletNetworkAsyncTask  extends CloudletAsyncTask<
     }
 
     /**
-     * What the task actually does, which is to connect to a newtork.
+     * What the task actually does, which is to connect to a network.
      * @param params
      * @return
      */

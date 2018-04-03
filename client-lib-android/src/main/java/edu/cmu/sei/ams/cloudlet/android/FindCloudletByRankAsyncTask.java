@@ -67,15 +67,17 @@ public class FindCloudletByRankAsyncTask extends CloudletAsyncTask<Cloudlet>
             // First ensure we are in a valid cloudlet network.
             boolean success = CloudletNetworkSelector.connectToRandomValidNetwork(mContext);
             if(!success)
-                throw new Exception("No valid cloudlet networks available.");
+            {
+                Log.e("FindCloudletByRankAsync", "No recognized cloudlet networks available, will attempt to use current network anyway. ");
+            }
 
-            Log.i("FindCloudletByRankAsyncTask", "Finding cloudlets");
+            Log.i("FindCloudletByRankAsync", "Finding cloudlets");
             CloudletFinder finder = new CloudletFinder(DeviceIdManager.getDeviceId(this.mContext), new AndroidCredentialsManager());
             return finder.findCloudletForService(mServiceId, mRanker);
         }
         catch(Exception e)
         {
-            Log.e("FindCloudletByRankAsyncTask", "Error finding cloudlet: ", e);
+            Log.e("FindCloudletByRankAsync", "Error finding cloudlet: ", e);
             this.mException = e;
             return null;
         }

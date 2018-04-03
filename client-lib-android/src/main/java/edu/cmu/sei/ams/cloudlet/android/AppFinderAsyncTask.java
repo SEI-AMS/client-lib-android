@@ -30,6 +30,7 @@ http://jquery.org/license
 package edu.cmu.sei.ams.cloudlet.android;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,9 @@ public class AppFinderAsyncTask extends CloudletAsyncTask<List<App>>
             // First ensure we are in a valid cloudlet network.
             boolean success = CloudletNetworkSelector.connectToRandomValidNetwork(mContext);
             if(!success)
-                throw new Exception("No valid cloudlet networks available.");
+            {
+                Log.e("AppFinderAsyncTask", "No recognized cloudlet networks available, will attempt to use current network anyway. ");
+            }
 
             CloudletFinder finder = new CloudletFinder(DeviceIdManager.getDeviceId(this.mContext), new AndroidCredentialsManager());
             AppFinder appFinder = new AppFinder(finder);
@@ -81,8 +84,8 @@ public class AppFinderAsyncTask extends CloudletAsyncTask<List<App>>
         }
         catch(Exception except)
         {
+            Log.e("AppFinderAsyncTask", "Error finding cloudlet or app: ", except);
             this.mException = except;
-            this.mException.printStackTrace();
             return new ArrayList<App>();
         }
     }

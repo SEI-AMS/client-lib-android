@@ -38,7 +38,7 @@ public class CloudletNetworkSelector
     }
 
     /**
-     * Attempts to connect to any valid cloudlet network, it not connected.
+     * Attempts to connect to any valid cloudlet network, if not connected.
      * @param context the Android context.
      * @return true if we could connect or were connected to a valid network.
      */

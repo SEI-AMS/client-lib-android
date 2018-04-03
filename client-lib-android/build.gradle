@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply from: '../maven-push.gradle'
 
 group = 'edu.cmu.sei.ams.cloudlet'
-version = "3.0.0"
+version = "3.0.1"
 
 android {
     compileSdkVersion 23
